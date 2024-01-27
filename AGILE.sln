@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AGILE", "AGILE\AGILE.csproj
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "AGILE-Installer", "AGILE-Installer\AGILE-Installer.vdproj", "{7593DB34-D6D6-4342-B025-52BC12E9369E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AGILibrary", "AGILibrary\AGILibrary\AGILibrary.csproj", "{4E400D6F-0A92-4981-BB14-C26C5E4D946D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7593DB34-D6D6-4342-B025-52BC12E9369E}.Debug|Any CPU.Build.0 = Debug
 		{7593DB34-D6D6-4342-B025-52BC12E9369E}.Release|Any CPU.ActiveCfg = Release
 		{7593DB34-D6D6-4342-B025-52BC12E9369E}.Release|Any CPU.Build.0 = Release
+		{4E400D6F-0A92-4981-BB14-C26C5E4D946D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E400D6F-0A92-4981-BB14-C26C5E4D946D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E400D6F-0A92-4981-BB14-C26C5E4D946D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E400D6F-0A92-4981-BB14-C26C5E4D946D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
