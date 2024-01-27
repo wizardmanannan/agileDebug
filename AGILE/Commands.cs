@@ -7,6 +7,9 @@ using static AGI.Resource.Logic;
 using Marshal = System.Runtime.InteropServices.Marshal;
 using static AGILE.ScriptBuffer;
 using System.Threading;
+using System;
+using System.Diagnostics;
+
 
 namespace AGILE
 {
@@ -416,42 +419,81 @@ namespace AGILE
                 case 1: // equaln
                     {
                         result = (state.Vars[condition.Operands[0].asByte()] == condition.Operands[1].asByte());
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"checking that {condition.Operands[0].asByte()} ({state.Vars[condition.Operands[0].asByte()]}) is equal to {condition.Operands[1].asByte()} and it {result}");
+                        }
                     }
                     break;
 
                 case 2: // equalv
                     {
                         result = (state.Vars[condition.Operands[0].asByte()] == state.Vars[condition.Operands[1].asByte()]);
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"checking that {condition.Operands[0].asByte()} ({state.Vars[condition.Operands[0].asByte()]}) is equal to {condition.Operands[1].asByte()} ({state.Vars[condition.Operands[1].asByte()]}) and it {result}");
+                        }
                     }
                     break;
 
                 case 3: // lessn
                     {
                         result = (state.Vars[condition.Operands[0].asByte()] < condition.Operands[1].asByte());
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"checking that {state.Vars[condition.Operands[0].asByte()]} is < {condition.Operands[1].asByte()} and the result should be {result}");
+                        }
+
                     }
                     break;
 
                 case 4: // lessv
                     {
                         result = (state.Vars[condition.Operands[0].asByte()] < state.Vars[condition.Operands[1].asByte()]);
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"checking that {state.Vars[condition.Operands[0].asByte()]} is < {state.Vars[condition.Operands[1].asByte()]} and the result should be {result}");
+                        }
+
                     }
                     break;
 
                 case 5: // greatern
                     {
                         result = (state.Vars[condition.Operands[0].asByte()] > condition.Operands[1].asByte());
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"checking that {condition.Operands[0].asByte()} ({state.Vars[condition.Operands[0].asByte()]}) is > {condition.Operands[1].asByte()} and the result should be {result}");
+                        }
+
                     }
                     break;
 
                 case 6: // greaterv
                     {
                         result = (state.Vars[condition.Operands[0].asByte()] > state.Vars[condition.Operands[1].asByte()]);
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"checking that {condition.Operands[0].asByte()} ({state.Vars[condition.Operands[0].asByte()]}) is > {state.Vars[condition.Operands[1].asByte()]} and the result should be {result}");
+                        }
                     }
                     break;
 
                 case 7: // isset
                     {
                         result = state.Flags[condition.Operands[0].asByte()];
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"checking that {condition.Operands[0].asByte()} is set and it {result}");
+                        }
+
                     }
                     break;
 
@@ -561,8 +603,18 @@ namespace AGILE
                             if (IsConditionTrue(orCondition))
                             {
                                 result = true;
+
+                                if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                                {
+                                    Debug.WriteLine("the result is true");
+                                }
+
                                 break;
                             }
+                        }
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine("the result is false");
                         }
                     }
                     break;
@@ -570,6 +622,27 @@ namespace AGILE
                 case 0xfd: // NOT
                     {
                         result = !IsConditionTrue(condition.Operands[0].asCondition());
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine("the result is inverted by not");
+                        }
+
+                        if(result)
+                        {
+                            if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                            {
+                                Debug.WriteLine("the result is true");
+                            }
+                        }
+                        else
+                        {
+                            if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                            {
+                                Debug.WriteLine("the result is false");
+                            }
+                        }
+
                     }
                     break;
             }
@@ -582,7 +655,7 @@ namespace AGILE
         /// </summary>
         /// <param name="action">The Action command to execute.</param>
         /// <returns>The index of the next Action to execute, or 0 to rescan logics from top, or -1 when at end of Logic.</returns>
-        private int ExecuteAction(Action action)
+        private int ExecuteAction(AGI.Resource.Logic.Action action)
         {
             // Normally the next Action will be the next one in the Actions list, but this
             // can be overwritten by the If and Goto actions.
@@ -597,6 +670,11 @@ namespace AGILE
                     {
                         byte varNum = action.Operands[0].asByte();
                         if (state.Vars[varNum] < 255) state.Vars[varNum]++;
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"incrementing var {varNum}({state.Vars[varNum] - 1}) to {state.Vars[varNum]}");
+                        }
                     }
                     break;
 
@@ -604,6 +682,11 @@ namespace AGILE
                     {
                         byte varNum = action.Operands[0].asByte();
                         if (state.Vars[varNum] > 0) state.Vars[varNum]--;
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"decrementing var {varNum}({state.Vars[varNum] + 1}) to {state.Vars[varNum]}");
+                        }
                     }
                     break;
 
@@ -611,7 +694,14 @@ namespace AGILE
                     {
                         byte varNum = action.Operands[0].asByte();
                         byte value = action.Operands[1].asByte();
-                        state.Vars[varNum] = value;
+                        byte previousValue = state.Vars[varNum];
+
+;                        state.Vars[varNum] = value;
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"assign var {varNum} ({previousValue}) to {value}");
+                        }
                     }
                     break;
 
@@ -619,7 +709,15 @@ namespace AGILE
                     {
                         byte varNum1 = action.Operands[0].asByte();
                         byte varNum2 = action.Operands[1].asByte();
+                        byte previousValue = state.Vars[varNum1];
+
+
                         state.Vars[varNum1] = state.Vars[varNum2];
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"assign var {varNum1}  ({previousValue}) to {varNum2} ({state.Vars[varNum2]}) which is {state.Vars[varNum2]}");
+                        }
                     }
                     break;
 
@@ -628,6 +726,11 @@ namespace AGILE
                         byte varNum = action.Operands[0].asByte();
                         byte value = action.Operands[1].asByte();
                         state.Vars[varNum] += value;
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"add var {varNum} ({state.Vars[varNum] - value}) to {value} which is {state.Vars[varNum]}");
+                        }
                     }
                     break;
 
@@ -636,6 +739,11 @@ namespace AGILE
                         byte varNum1 = action.Operands[0].asByte();
                         byte varNum2 = action.Operands[1].asByte();
                         state.Vars[varNum1] += state.Vars[varNum2];
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"add var {varNum1} ({state.Vars[varNum1] - state.Vars[varNum2]}) to {varNum2} ({state.Vars[varNum2]}) which is {state.Vars[varNum1]}");
+                        }
                     }
                     break;
 
@@ -644,6 +752,11 @@ namespace AGILE
                         byte varNum = action.Operands[0].asByte();
                         byte value = action.Operands[1].asByte();
                         state.Vars[varNum] -= value;
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"sub var {varNum} ({state.Vars[varNum] + value}) to {value} which is {state.Vars[varNum]}");
+                        }
                     } 
                     break;
 
@@ -651,7 +764,12 @@ namespace AGILE
                     {
                         byte varNum1 = action.Operands[0].asByte();
                         byte varNum2 = action.Operands[1].asByte();
-                        state.Vars[varNum1] -= state.Vars[varNum2];
+                        state.Vars[varNum1] -= state.Vars[varNum2]; ;
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"sub var {varNum1} ({state.Vars[varNum1] + state.Vars[varNum2]}) to {varNum2} ({state.Vars[varNum2]}) which is {state.Vars[varNum1]}");
+                        }
                     }
                     break;
 
@@ -660,6 +778,11 @@ namespace AGILE
                         byte varNum1 = action.Operands[0].asByte();
                         byte varNum2 = action.Operands[1].asByte();
                         state.Vars[state.Vars[varNum1]] = state.Vars[varNum2];
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"indir V {varNum1} ({state.Vars[varNum1]}) value {varNum2} ({state.Vars[varNum2]})");
+                        }
                     }
                     break;
 
@@ -676,18 +799,29 @@ namespace AGILE
                         byte varNum = action.Operands[0].asByte();
                         byte value = action.Operands[1].asByte();
                         state.Vars[state.Vars[varNum]] = value;
+
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine($"indir {varNum} ({state.Vars[varNum]}) value {value}");
+                        }
+
                     }
                     break;
 
                 case 12: // set
                     {
                         state.Flags[action.Operands[0].asByte()] = true;
+
+                        DebugPostCheckFlag(action.Operands[0].asByte());
                     }
                     break;
 
                 case 13: // reset
                     {
                         state.Flags[action.Operands[0].asByte()] = false;
+                        DebugPostCheckFlag(action.Operands[0].asByte());
+
+                        DebugPostCheckFlag(action.Operands[0].asByte());
                     }
                     break;
 
@@ -695,18 +829,24 @@ namespace AGILE
                     {
                         byte flagNum = action.Operands[0].asByte();
                         state.Flags[flagNum] = !state.Flags[flagNum];
+
+                        DebugPostCheckFlag(action.Operands[0].asByte());
                     }
                     break;
 
                 case 15: // set.v
                     {
                         state.Flags[state.Vars[action.Operands[0].asByte()]] = true;
+
+                        DebugPostCheckFlag(state.Vars[action.Operands[0].asByte()]);
                     }
                     break;
 
                 case 16: // reset.v
                     {
                         state.Flags[state.Vars[action.Operands[0].asByte()]] = false;
+
+                        DebugPostCheckFlag(state.Vars[action.Operands[0].asByte()]);
                     }
                     break;
 
@@ -714,6 +854,8 @@ namespace AGILE
                     {
                         byte flagNum = state.Vars[action.Operands[0].asByte()];
                         state.Flags[flagNum] = !state.Flags[flagNum];
+
+                        DebugPostCheckFlag(state.Vars[action.Operands[0].asByte()]);
                     }
                     break;
 
@@ -2052,8 +2194,20 @@ namespace AGILE
                         {
                             if (!IsConditionTrue(condition))
                             {
+                                if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                                {
+                                    Debug.WriteLine("the result is false");
+                                }
+
                                 nextActionNum = ((IfAction)action).GetDestinationActionIndex();
                                 break;
+                            }
+                            else
+                            {
+                                if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                                {
+                                    Debug.WriteLine("the result is true");
+                                }
                             }
                         }
                     }
@@ -2065,6 +2219,17 @@ namespace AGILE
 
             return nextActionNum;
         }
+
+        void DebugPostCheckFlag(byte flag)
+        {
+            if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+            {
+                Debug.WriteLine($"post check flag {flag} ({state.Flags[flag]})");
+            }
+        }
+
+        uint opCounter = 0;
+        uint opStartPrintingAt = 1;
 
         /// <summary>
         /// Executes the Logic identified by the given logic number.
@@ -2085,6 +2250,7 @@ namespace AGILE
 
             // Continually execute the Actions in the Logic until one of them tells us to exit.
             do actionNum = ExecuteAction(logic.Actions[actionNum]); while (actionNum > 0);
+            opCounter++;
 
             // Restore the previous Logic number before we leave.
             state.CurrentLogNum = previousLogNum;
