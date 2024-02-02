@@ -613,11 +613,15 @@ namespace AGILE
 
                                 break;
                             }
+                            else
+                            {
+                                if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                                {
+                                    Debug.WriteLine("THE RESULT IS FALSE");
+                                }
+                            }
                         }
-                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
-                        {
-                            Debug.WriteLine("THE RESULT IS FALSE");
-                        }
+                        skipDueToOr = true;
                     }
                     break;
 
@@ -625,12 +629,7 @@ namespace AGILE
                     {
                         result = !IsConditionTrue(condition.Operands[0].asCondition());
 
-                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
-                        {
-                            Debug.WriteLine("THE RESULT IS INVERTED BY NOT");
-                        }
-
-                        if(result)
+                        if (!result) //Because it is inverted by not, false becomes true
                         {
                             if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
                             {
@@ -645,6 +644,12 @@ namespace AGILE
                             }
                         }
 
+                        if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                        {
+                            Debug.WriteLine("THE RESULT IS INVERTED BY NOT");
+                            skipDueToNot = true;
+                        }
+
                     }
                     break;
             }
@@ -656,6 +661,9 @@ namespace AGILE
         {
             Debug.Print($"OP {opCounter++}, {opCode}, VAR 0 IS {state.Vars[0]}.");
         }
+
+        bool skipDueToNot = false;
+        bool skipDueToOr = false;
 
         /// <summary>
         /// Executes the given Action command.
@@ -671,10 +679,6 @@ namespace AGILE
             DebugPrint(action.Operation.Opcode);
 
             if(opStopAt != 0 && opCounter >= opStopAt)
-            {
-                Debugger.Break();
-            }
-            if (state.Vars[97] == 1)
             {
                 Debugger.Break();
             }
@@ -837,8 +841,6 @@ namespace AGILE
                 case 13: // reset
                     {
                         state.Flags[action.Operands[0].asByte()] = false;
-                        DebugPostCheckFlag(action.Operands[0].asByte());
-
                         DebugPostCheckFlag(action.Operands[0].asByte());
                     }
                     break;
@@ -2221,10 +2223,11 @@ namespace AGILE
                         {
                             if (!IsConditionTrue(condition))
                             {
-                                if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                                if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0 && !skipDueToNot && !skipDueToOr)
                                 {
                                     Debug.WriteLine("THE RESULT IS FALSE");
                                 }
+                                skipDueToNot = false;
 
                                 nextActionNum = ((IfAction)action).GetDestinationActionIndex();
 
@@ -2242,10 +2245,12 @@ namespace AGILE
                             }
                             else
                             {
-                                if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                                if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0 && !skipDueToNot && !skipDueToOr)
                                 {
                                     Debug.WriteLine("THE RESULT IS TRUE");
                                 }
+                                skipDueToNot = false;
+                                skipDueToOr = false;
                             }
                         }
                     }
@@ -2262,15 +2267,18 @@ namespace AGILE
         {
             if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
             {
-                Debug.WriteLine($"b1 is {a} b2 is {b}, Shift {b << 8} and the jump result is {(a + (b << 8))}");
+                Debug.WriteLine($"B1 IS {a} B2 IS {b}, SHIFT {b << 8} AND THE JUMP RESULT IS {(a + (b << 8))}.");
             }
         }
 
-        void DebugPostCheckFlag(byte flag)
+        unsafe void DebugPostCheckFlag(byte flag)
         {
+            bool result = state.Flags[flag];
+
             if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
             {
-                Debug.WriteLine($"POST CHECK FLAG {flag} ({state.Flags[flag]})");
+                //{*((byte*)(&result))}
+                Debug.WriteLine($"POST CHECK FLAG {flag} ({*((byte*)(&result))})");
             }
         }
 
@@ -2297,7 +2305,6 @@ namespace AGILE
 
             // Continually execute the Actions in the Logic until one of them tells us to exit.
             do actionNum = ExecuteAction(logic.Actions[actionNum]); while (actionNum > 0);
-            opCounter++;
 
             // Restore the previous Logic number before we leave.
             state.CurrentLogNum = previousLogNum;
