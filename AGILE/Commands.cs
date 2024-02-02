@@ -659,7 +659,8 @@ namespace AGILE
 
         void DebugPrint(int opCode)
         {
-            Debug.Print($"OP {opCounter++}, {opCode}, VAR 0 IS {state.Vars[0]}.");
+            Debug.Print($"OP {opCounter++}, {opCode}, VAR 77 IS {state.Vars[77]}.");
+            //Debug.Print(, state.AnimatedObjects[0].X)
         }
 
         bool skipDueToNot = false;
@@ -866,7 +867,16 @@ namespace AGILE
                     {
                         state.Flags[state.Vars[action.Operands[0].asByte()]] = false;
 
-                        DebugPostCheckFlag(state.Vars[action.Operands[0].asByte()]);
+                        byte postcheckVal;
+                        try
+                        {
+                            postcheckVal = Convert.ToByte(action.Operands[0].value);
+                        }
+                        catch
+                        {
+                            postcheckVal = 0;
+                        }
+                        DebugPostCheckFlag(postcheckVal); 
                     }
                     break;
 
@@ -2212,6 +2222,11 @@ namespace AGILE
                             a = action.Operands[1].A;
                             b = action.Operands[1].B;
                         }
+                        else if(action.Operands.Count == 1)
+                        {
+                            a = action.Operands[0].A;
+                            b = action.Operands[0].B;
+                        }
 
                         CodeJumpDebug(a, b);
                     }
@@ -2228,6 +2243,7 @@ namespace AGILE
                                     Debug.WriteLine("THE RESULT IS FALSE");
                                 }
                                 skipDueToNot = false;
+                                skipDueToOr = false;
 
                                 nextActionNum = ((IfAction)action).GetDestinationActionIndex();
 
@@ -2284,7 +2300,7 @@ namespace AGILE
 
         uint opCounter = 1;
         uint opStartPrintingAt = 1;
-        uint opStopAt = 5000;
+        uint opStopAt = 555;
 
         /// <summary>
         /// Executes the Logic identified by the given logic number.

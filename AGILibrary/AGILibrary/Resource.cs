@@ -2053,7 +2053,7 @@ namespace AGI
 
       public class Operand
       {
-        private object value;
+        public object value;
 
         public Resource.Logic.OperandType OperandType { get; set; }
 
