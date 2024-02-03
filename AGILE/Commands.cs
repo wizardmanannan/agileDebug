@@ -410,6 +410,9 @@ namespace AGILE
         /// </summary>
         /// <param name="condition">The Condition to evaluate.</param>
         /// <returns>The result of evaluating the Condition; either true or false. </returns>
+
+        private int elevenCounter = 0;
+        private byte[] elevenValues = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6};
         private unsafe bool IsConditionTrue(Condition condition)
         {
             bool result = false;
@@ -420,22 +423,40 @@ namespace AGILE
             {
                 case 1: // equaln
                     {
-                        result = (state.Vars[condition.Operands[0].asByte()] == condition.Operands[1].asByte());
+                        byte varToCheck = condition.Operands[0].asByte();
+                        byte value = condition.Operands[1].asByte();
+
+                        if(varToCheck == 11 && elevenCounter < elevenValues.Length)
+                        {
+                            value = elevenValues[elevenCounter++];
+                        }
+
+                        result = (state.Vars[varToCheck] == value);
 
                         if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
                         {
-                            Debug.WriteLine($"CHECKING THAT {condition.Operands[0].asByte()} ({state.Vars[condition.Operands[0].asByte()]}) IS EQUAL TO {condition.Operands[1].asByte()} AND IT {*((byte*)(&result))}");
+                            Debug.WriteLine($"CHECKING THAT {varToCheck} ({state.Vars[varToCheck]}) IS EQUAL TO {value} AND IT {*((byte*)(&result))}");
                         }
                     }
                     break;
 
                 case 2: // equalv
                     {
-                        result = (state.Vars[condition.Operands[0].asByte()] == state.Vars[condition.Operands[1].asByte()]);
+                        byte varToCheck1 = condition.Operands[0].asByte();
+                        byte varToCheck2 = condition.Operands[1].asByte();
+                        byte value1 = state.Vars[condition.Operands[0].asByte()]; 
+                        byte value2 = state.Vars[condition.Operands[1].asByte()];
+
+                        if (varToCheck1 == 11 && elevenCounter < elevenValues.Length)
+                        {
+                            value1 = elevenValues[elevenCounter++];
+                        }
+
+                        result = (value1 == value2);
 
                         if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
                         {
-                            Debug.WriteLine($"CHECKING THAT {condition.Operands[0].asByte()} ({state.Vars[condition.Operands[0].asByte()]}) IS EQUAL TO {condition.Operands[1].asByte()} ({state.Vars[condition.Operands[1].asByte()]}) AND IT {*((byte*)(&result))}");
+                            Debug.WriteLine($"CHECKING THAT {varToCheck1} ({value1}) IS EQUAL TO {varToCheck2} ({value2}) AND IT {*((byte*)(&result))}");
                         }
                     }
                     break;
@@ -606,7 +627,7 @@ namespace AGILE
                             {
                                 result = true;
 
-                                if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                                if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0 && !skipDueToNot)
                                 {
                                     Debug.WriteLine("THE RESULT IS TRUE");
                                 }
@@ -615,7 +636,7 @@ namespace AGILE
                             }
                             else
                             {
-                                if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
+                                if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0 && !skipDueToNot)
                                 {
                                     Debug.WriteLine("THE RESULT IS FALSE");
                                 }
@@ -659,8 +680,8 @@ namespace AGILE
 
         void DebugPrint(int opCode)
         {
-            Debug.Print($"OP {opCounter++}, {opCode}, VAR 77 IS {state.Vars[77]}.");
-            //Debug.Print(, state.AnimatedObjects[0].X)
+            Debug.Print($"OP {opCounter++}, {opCode}, VAR 73 IS {state.Vars[73]}.");
+            //Debug.Print($" {state.AnimatedObjects[0].X}  {state.AnimatedObjects[0].Y} ");
         }
 
         bool skipDueToNot = false;
@@ -704,11 +725,12 @@ namespace AGILE
                 case 2: // decrement
                     {
                         byte varNum = action.Operands[0].asByte();
+
                         if (state.Vars[varNum] > 0) state.Vars[varNum]--;
 
                         if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
                         {
-                            Debug.WriteLine($"DECREMENTING VAR {varNum}({state.Vars[varNum] + 1}) TO {state.Vars[varNum]}");
+                            Debug.WriteLine($"DECREMENTING VAR {varNum} TO {state.Vars[varNum]}");
                         }
                     }
                     break;
@@ -734,12 +756,13 @@ namespace AGILE
                         byte varNum2 = action.Operands[1].asByte();
                         byte previousValue = state.Vars[varNum1];
 
+                        //if(varNum2 == 11)
 
                         state.Vars[varNum1] = state.Vars[varNum2];
 
                         if (opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
                         {
-                            Debug.WriteLine($"ASSIGN VAR {varNum1}  ({previousValue}) TO {varNum2} ({state.Vars[varNum2]}) WHICH IS {state.Vars[varNum2]}");
+                            Debug.WriteLine($"ASSIGN VAR {varNum1}  ({previousValue}) TO {varNum2}");
                         }
                     }
                     break;
@@ -2300,7 +2323,7 @@ namespace AGILE
 
         uint opCounter = 1;
         uint opStartPrintingAt = 1;
-        uint opStopAt = 555;
+        uint opStopAt = 10000;
 
         /// <summary>
         /// Executes the Logic identified by the given logic number.
