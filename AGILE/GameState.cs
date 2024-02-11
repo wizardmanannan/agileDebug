@@ -37,7 +37,7 @@ namespace AGILE
 
         public bool[] Controllers { get; set; }
         public byte[] Vars { get; set; }
-        public bool[] Flags { get; set; }
+        public DebuggableList<bool> Flags { get; set; }
         public string[] Strings { get; set; }
         public AnimatedObject[] AnimatedObjects { get; }
         public AnimatedObject Ego { get { return AnimatedObjects[0]; } }
@@ -157,7 +157,13 @@ namespace AGILE
         {
             this.game = game;
             this.Vars = new byte[Defines.NUMVARS];
-            this.Flags = new bool[Defines.NUMFLAGS];
+            this.Flags = new DebuggableList<bool>();
+            
+            for(int i = 0; i < Defines.NUMFLAGS; i++)
+            {
+                this.Flags.Add(false);
+            }
+
             this.Strings = new string[Defines.NUMSTRINGS];
             this.Controllers = new bool[Defines.NUMCONTROL];
             this.ScanStart = new int[256];

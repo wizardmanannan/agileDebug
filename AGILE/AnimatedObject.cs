@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 using static AGI.Resource;
 using static AGI.Resource.View;
 
@@ -42,7 +43,23 @@ namespace AGILE
         /// <summary>
         /// Current X position of this AnimatedObject.
         /// </summary>
-        public short X { get; set; }
+
+        private short _x;
+        public short X { 
+            get
+            {
+                return _x;
+            }
+            set
+            {
+                if(ObjectNumber == 1 && value != 0)
+                {
+                    int o = 8;
+                }
+
+                _x = value;
+            }
+        }
 
         /// <summary>
         /// Current Y position of this AnimatedObject.
@@ -227,7 +244,23 @@ namespace AGILE
         /// <summary>
         /// true if the AnimatedObject is being repositioned in this cycle; otherwise false.
         /// </summary>
-        public bool Repositioned { get; set; }
+
+        bool _repositioned;
+        public bool Repositioned { 
+            get
+            {
+                return _repositioned;
+            }
+            set
+            {
+                if(ObjectNumber == 1 && value && !_repositioned || _repositioned && !value)
+                {
+                    int q = 7;
+                }
+                _repositioned = value;
+            }
+                
+                }
 
         /// <summary>
         /// true if the AnimatedObject should not have the cel advanced in this loop; otherwise false.
@@ -582,6 +615,11 @@ namespace AGILE
         /// <param name="completionFlag">The flag number to set when the motion has completed.</param>
         public void StartMoveObj(byte x, byte y, byte stepSize, byte completionFlag)
         {
+            if(this.ObjectNumber == 1)
+            {
+                int q = 7;
+            }
+
             this.MotionType = MotionType.MoveTo;
             this.MotionParam1 = x;
             this.MotionParam2 = y;

@@ -14,6 +14,8 @@ namespace AGILE
 
         /* ------------------------ System variables -------------------------- */
 
+        public static uint opCounter = 1;
+
         public const int CURROOM = 0;           /* current.room */
 
         public const int PREVROOM = 1;          /* previous.room */
