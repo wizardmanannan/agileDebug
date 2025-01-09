@@ -865,6 +865,7 @@ namespace AGILE
         /// its current position, then start scanning in a spiral pattern for a position
         /// at which it can be placed.
         /// </summary>
+        /// TODO: Implement this so that G. is in the right position
         public void FindPosition()
         {
             // Place Y below horizon if it is above it and is not ignoring the horizon.
