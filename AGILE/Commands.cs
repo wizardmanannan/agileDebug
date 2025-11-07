@@ -2391,7 +2391,7 @@ namespace AGILE
             }
         }
 
-        uint opStartPrintingAt = 1;
+        uint opStartPrintingAt = 0;
         uint opStopAt = 0;
 
         /// <summary>
