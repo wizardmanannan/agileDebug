@@ -23,6 +23,86 @@ namespace AGILE
     /// </summary>
     class AnimatedObject : IComparable<AnimatedObject>
     {
+
+        public static byte functionNumber = 0, runNumber = 0;
+        public const byte InterestedRoomNumber = 1;
+
+        private void PrintState(byte entryNum)
+        {
+            if (this.Drawn)
+            {
+                Console.WriteLine($"AT {runNumber}.{functionNumber}");
+                Console.WriteLine($"ENTRY {entryNum}");
+                Console.WriteLine($"ANIMATED          {(this.Animated ? 1 : 0)}");
+                Console.WriteLine($"BLOCKED           {(this.Blocked ? 1 : 0)}");
+                Console.WriteLine($"CURRENT CEL       {this.CurrentCel}");
+                Console.WriteLine($"CURRENT LOOP      {this.CurrentLoop}");
+                Console.WriteLine($"CURRENT VIEW      {this.CurrentView}");
+                Console.WriteLine($"CYCLE             {(this.Cycle ? 1 : 0)}");
+                Console.WriteLine($"CYCLE TIME        {this.CycleTime}");
+                Console.WriteLine($"CYCLE TIME COUNT  {this.CycleTimeCount}");
+                Console.WriteLine($"CYCLE TYPE        {(int)this.CycleType}");
+                Console.WriteLine($"DIRECTION         {this.Direction}");
+                Console.WriteLine($"DRAWN             {(this.Drawn ? 1 : 0)}");
+                Console.WriteLine($"FIXED LOOP        {(this.FixedLoop ? 1 : 0)}");
+                Console.WriteLine($"FIXED PRIORITY    {(this.FixedPriority ? 1 : 0)}");
+                Console.WriteLine($"IGNORE BLOCKS     {(this.IgnoreBlocks ? 1 : 0)}");
+                Console.WriteLine($"IGNORE HORIZON    {(this.IgnoreHorizon ? 1 : 0)}");
+                Console.WriteLine($"IGNORE OBJECTS    {(this.IgnoreObjects ? 1 : 0)}");
+                Console.WriteLine($"MOTION PARAM 1    {this.MotionParam1}");
+                Console.WriteLine($"MOTION PARAM 2    {this.MotionParam2}");
+                Console.WriteLine($"MOTION PARAM 3    {this.MotionParam3}");
+                Console.WriteLine($"MOTION PARAM 4    {this.MotionParam4}");
+                Console.WriteLine($"MOTION TYPE       {(int )this.MotionType}");
+                Console.WriteLine($"NO ADVANCE        {(this.NoAdvance ? 1 : 0)}");
+                Console.WriteLine($"OBJECT NUMBER     {this.ObjectNumber}");
+                Console.WriteLine($"PREV X            {this.PrevX}");
+                Console.WriteLine($"PREV Y            {this.PrevY}");
+                Console.WriteLine($"PRIORITY          {this.Priority}");
+                Console.WriteLine($"REPOSITIONED      {(this.Repositioned ? 1 : 0)}");
+                Console.WriteLine($"STAY ON LAND      {(this.StayOnLand ? 1 : 0)}");
+                Console.WriteLine($"STAY ON WATER     {(this.StayOnWater ? 1 : 0)}");
+                Console.WriteLine($"STEP SIZE         {this.StepSize}");
+                Console.WriteLine($"STEP TIME         {this.StepTime}");
+                Console.WriteLine($"STEP TIME COUNT   {this.StepTimeCount}");
+                Console.WriteLine($"STOPPED           {(this.Stopped ? 1 : 0)}");
+                Console.WriteLine($"UPDATE            {(this.Update ? 1 : 0)}");
+                Console.WriteLine($"X                 {this.X}");
+                Console.WriteLine($"X SIZE            {this.XSize}");
+                Console.WriteLine($"Y                 {this.Y}");
+                Console.WriteLine($"Y SIZE            {this.YSize}");
+                Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+            }
+        }
+
+        public void PrintAllObjects()
+        {
+
+            if (state.Vars[0] == InterestedRoomNumber)
+            {
+                for (byte i = 0; i < 20; i++)
+                {
+                    PrintState(i);
+                }
+
+
+                if (state.AnimatedObjects.Any(a => a.Drawn))
+                {
+                    if (state.Vars[0] == InterestedRoomNumber)
+                    {
+                        functionNumber++;
+                    }
+
+                    Console.WriteLine("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
+                }
+            }
+        }
+
+        void DebugSpritesNextRun()
+        {
+
+        }
+
         /// <summary>
         /// Number of animate cycles between moves of the AnimatedObject. Set by step.time action command.
         /// </summary>
@@ -45,14 +125,15 @@ namespace AGILE
         /// </summary>
 
         private short _x;
-        public short X { 
+        public short X
+        {
             get
             {
                 return _x;
             }
             set
             {
-                if(ObjectNumber == 1 && value != 0)
+                if (ObjectNumber == 1 && value != 0)
                 {
                     int o = 8;
                 }
@@ -246,21 +327,22 @@ namespace AGILE
         /// </summary>
 
         bool _repositioned;
-        public bool Repositioned { 
+        public bool Repositioned
+        {
             get
             {
                 return _repositioned;
             }
             set
             {
-                if(ObjectNumber == 1 && value && !_repositioned || _repositioned && !value)
+                if (ObjectNumber == 1 && value && !_repositioned || _repositioned && !value)
                 {
                     int q = 7;
                 }
                 _repositioned = value;
             }
-                
-                }
+
+        }
 
         /// <summary>
         /// true if the AnimatedObject should not have the cel advanced in this loop; otherwise false.
@@ -444,7 +526,7 @@ namespace AGILE
         /// <summary>
         /// New Direction matrix to support the MoveDirection method.
         /// </summary>
-        private static readonly byte[,] newdir = { {8, 1, 2}, {7, 0, 3}, {6, 5, 4} };
+        private static readonly byte[,] newdir = { { 8, 1, 2 }, { 7, 0, 3 }, { 6, 5, 4 } };
 
         /// <summary>
         /// Return the direction from (oldx, oldy) to (newx, newy).  If the object is within
@@ -458,7 +540,7 @@ namespace AGILE
         /// <returns></returns>
         private byte MoveDirection(short oldx, short oldy, short newx, short newy, short delta)
         {
-	        return (newdir[DirectionIndex(newy - oldy, delta), DirectionIndex(newx - oldx, delta)]);
+            return (newdir[DirectionIndex(newy - oldy, delta), DirectionIndex(newx - oldx, delta)]);
         }
 
         /// <summary>
@@ -615,7 +697,7 @@ namespace AGILE
         /// <param name="completionFlag">The flag number to set when the motion has completed.</param>
         public void StartMoveObj(byte x, byte y, byte stepSize, byte completionFlag)
         {
-            if(this.ObjectNumber == 1)
+            if (this.ObjectNumber == 1)
             {
                 int q = 7;
             }
@@ -754,7 +836,8 @@ namespace AGILE
         /// </summary>
         public void UpdatePosition()
         {
-            if (Animated && Update && Drawn) {
+            if (Animated && Update && Drawn)
+            {
                 // Decrement the move clock for this object.  Don't move the object unless
                 // the clock has reached 0.
                 if ((StepTimeCount != 0) && (--StepTimeCount != 0)) return;
@@ -773,7 +856,8 @@ namespace AGILE
                 byte os = 0;
 
                 // If object has not been repositioned, move it.
-                if (!this.Repositioned) {
+                if (!this.Repositioned)
+                {
                     od = this.Direction;
                     os = this.StepSize;
                     ox += (short)(xs[od] * os);
@@ -813,6 +897,7 @@ namespace AGILE
 
                 // If object can't be in this position, then move back to previous
                 // position and clear the border collision flag
+                PrintAllObjects(); //10
                 if (Collide() || !CanBeHere())
                 {
                     this.X = px;
@@ -823,6 +908,7 @@ namespace AGILE
                     FindPosition();
                 }
 
+                PrintAllObjects(); //11
                 // If the object hit the border, set the appropriate flags.
                 if (border > 0)
                 {
@@ -839,7 +925,9 @@ namespace AGILE
                     // If the object was on a 'moveobj', set the move as finished.
                     if (this.MotionType == MotionType.MoveTo)
                     {
+                        state.AnimatedObjects[0].PrintAllObjects(); //12
                         EndMoveObj();
+                        state.AnimatedObjects[0].PrintAllObjects(); //13
                     }
                 }
 
@@ -854,7 +942,7 @@ namespace AGILE
         /// <returns>true if the object's position puts it on the screen; false otherwise.</returns>
         private bool GoodPosition()
         {
-            return ((this.X >= Defines.MINX) && ((this.X + this.XSize) <= Defines.MAXX + 1) && 
+            return ((this.X >= Defines.MINX) && ((this.X + this.XSize) <= Defines.MAXX + 1) &&
                 ((this.Y - this.YSize) >= Defines.MINY - 1) && (this.Y <= Defines.MAXY) &&
                 (this.IgnoreHorizon || this.Y > state.Horizon));
         }
@@ -949,18 +1037,18 @@ namespace AGILE
                 //	- other object is not ignoring objects
                 //	- other object is not this object
                 //	- the two objects have overlapping baselines
-                if (otherObj.Animated && otherObj.Drawn && 
-                    !otherObj.IgnoreObjects && 
-                    (this.ObjectNumber != otherObj.ObjectNumber) && 
-                    (this.X + this.XSize >= otherObj.X) && 
+                if (otherObj.Animated && otherObj.Drawn &&
+                    !otherObj.IgnoreObjects &&
+                    (this.ObjectNumber != otherObj.ObjectNumber) &&
+                    (this.X + this.XSize >= otherObj.X) &&
                     (this.X <= otherObj.X + otherObj.XSize))
 
                     // At this point, the two objects have overlapping
                     // x coordinates. A collision has occurred if they have
                     // the same y coordinate or if the object in question has
                     // moved across the other object in the last animation cycle
-                    if ((this.Y == otherObj.Y) || 
-                        (this.Y > otherObj.Y && this.PrevY < otherObj.PrevY) || 
+                    if ((this.Y == otherObj.Y) ||
+                        (this.Y > otherObj.Y && this.PrevY < otherObj.PrevY) ||
                         (this.Y < otherObj.Y && this.PrevY > otherObj.PrevY))
                     {
                         return true;
@@ -1044,7 +1132,8 @@ namespace AGILE
                 int startPixelPos = (Y * 160) + X;
                 int endPixelPos = startPixelPos + XSize;
 
-                for (int pixelPos = startPixelPos; pixelPos < endPixelPos; pixelPos++) {
+                for (int pixelPos = startPixelPos; pixelPos < endPixelPos; pixelPos++)
+                {
                     // Get the priority screen priority value for this pixel of the base line.
                     int priority = state.ControlPixels[pixelPos];
 
@@ -1144,13 +1233,17 @@ namespace AGILE
                 // If the object is to move in this cycle and the loop has changed, point to the new loop.
                 if ((StepTimeCount == 1) && (newLoop != S) && (CurrentLoop != newLoop))
                 {
+                    PrintAllObjects(); //2
                     SetLoop(newLoop);
+                    PrintAllObjects(); //5
                 }
 
                 // If it is time to cycle the object, advance it's cel.
                 if (Cycle && (CycleTimeCount > 0) && (--CycleTimeCount == 0))
                 {
+                    PrintAllObjects(); //6
                     AdvanceCel();
+                    PrintAllObjects(); //7
 
                     CycleTimeCount = CycleTime;
                 }
@@ -1325,6 +1418,12 @@ namespace AGILE
                     this.X = (short)(Defines.MAXX - this.XSize);
                 }
 
+
+                if (state.Vars[0] == 1 && ObjectNumber == 1)
+                {
+                    int q = 7;
+                }
+
                 if (this.Y - this.YSize < Defines.MINY - 1)
                 {
                     this.Repositioned = true;
@@ -1354,7 +1453,9 @@ namespace AGILE
                 this.CurrentCel = 0;
             }
 
+            PrintAllObjects(); //3
             this.SetCel(this.CurrentCel);
+            PrintAllObjects(); //4
         }
 
         /// <summary>
@@ -1367,7 +1468,7 @@ namespace AGILE
 
             // If the current loop is greater than the number of loops for the view,
             // set the loop number to 0.  Otherwise, leave it alone.
-            SetLoop(CurrentLoop >= NumberOfLoops? (byte)0 : CurrentLoop);
+            SetLoop(CurrentLoop >= NumberOfLoops ? (byte)0 : CurrentLoop);
         }
 
         /// <summary>
@@ -1697,7 +1798,7 @@ namespace AGILE
             {
                 // Work out the rectangle that covers the previous and current cells.
                 int prevCelWidth = (this.PreviousCel != null ? this.PreviousCel.Screen.Bitmap.Width : this.XSize);
-                int prevCelHeight = (this.PreviousCel != null? this.PreviousCel.Screen.Bitmap.Height : this.YSize);
+                int prevCelHeight = (this.PreviousCel != null ? this.PreviousCel.Screen.Bitmap.Height : this.YSize);
                 int prevX = (this.PreviousCel != null ? this.PrevX : this.X);
                 int prevY = (this.PreviousCel != null ? this.PrevY : this.Y);
                 int leftmostX = Math.Min(prevX, this.X);

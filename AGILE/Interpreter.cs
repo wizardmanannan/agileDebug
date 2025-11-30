@@ -232,11 +232,15 @@ namespace AGILE
         /// </summary>
         private void AnimateObjects()
         {
+
+            state.AnimatedObjects[0].PrintAllObjects(); //1
+
             // Ask each AnimatedObject to update its loop and cell number if required.
             foreach (AnimatedObject aniObj in state.AnimatedObjects)
             {
                 aniObj.UpdateLoopAndCel();
             }
+            state.AnimatedObjects[0].PrintAllObjects(); //8
 
             state.Vars[Defines.EGOEDGE] = 0;
             state.Vars[Defines.OBJHIT] = 0;
@@ -245,11 +249,13 @@ namespace AGILE
             // Restore the backgrounds of the previous drawn cels for each AnimatedObject.
             state.RestoreBackgrounds(state.UpdateObjectList);
 
+            state.AnimatedObjects[0].PrintAllObjects(); //9
             // Ask each AnimatedObject to move if it needs to.
             foreach (AnimatedObject aniObj in state.AnimatedObjects)
             {
                 aniObj.UpdatePosition();
             }
+            state.AnimatedObjects[0].PrintAllObjects(); //14
 
             // Draw the AnimatedObjects to screen in priority order.
             state.DrawObjects(state.MakeUpdateObjectList());
@@ -258,6 +264,18 @@ namespace AGILE
             // Clear the 'must be on water or land' bits for ego.
             state.Ego.StayOnLand = false;
             state.Ego.StayOnWater = false;
+
+            state.AnimatedObjects[0].PrintAllObjects(); //15
+            SpriteDebugNextRun();
+        }
+
+        void SpriteDebugNextRun()
+        {
+            if (state.Vars[0] == AnimatedObject.InterestedRoomNumber)
+            {
+                AnimatedObject.runNumber++;
+                AnimatedObject.functionNumber = 0;
+            }
         }
 
         /// <summary>
