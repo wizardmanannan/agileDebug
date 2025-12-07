@@ -712,7 +712,7 @@ namespace AGILE
 #if PRINT
             if (Defines.opCounter >= opStartPrintingAt && opStartPrintingAt != 0)
             {
-                Debug.Print($"OP {Defines.opCounter}, {opCode}");
+                Debug.Print($"{opCode}. CURRENT VIEW {state.AnimatedObjects[0].CurrentView}");
             }
 #endif
             Defines.opCounter++;
@@ -1138,8 +1138,10 @@ namespace AGILE
                 case 35: // draw
                     {
                         AnimatedObject aniObj = state.AnimatedObjects[action.Operands[0].asByte()];
+                      
                         if (!aniObj.Drawn)
                         {
+                            Console.WriteLine($"DRAW {aniObj.ObjectNumber} FOR {state.Vars[0]}\n");
                             aniObj.Update = true;
                             aniObj.FindPosition();
                             aniObj.PrevX = aniObj.X;

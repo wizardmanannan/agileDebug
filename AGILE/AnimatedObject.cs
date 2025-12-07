@@ -29,49 +29,51 @@ namespace AGILE
 
         private void PrintState(byte entryNum)
         {
-            if (this.Drawn)
+            AnimatedObject obj = state.AnimatedObjects[entryNum];
+            if (obj.Drawn)
             {
                 Console.WriteLine($"AT {runNumber}.{functionNumber}");
                 Console.WriteLine($"ENTRY {entryNum}");
-                Console.WriteLine($"ANIMATED          {(this.Animated ? 1 : 0)}");
-                Console.WriteLine($"BLOCKED           {(this.Blocked ? 1 : 0)}");
-                Console.WriteLine($"CURRENT CEL       {this.CurrentCel}");
-                Console.WriteLine($"CURRENT LOOP      {this.CurrentLoop}");
-                Console.WriteLine($"CURRENT VIEW      {this.CurrentView}");
-                Console.WriteLine($"CYCLE             {(this.Cycle ? 1 : 0)}");
-                Console.WriteLine($"CYCLE TIME        {this.CycleTime}");
-                Console.WriteLine($"CYCLE TIME COUNT  {this.CycleTimeCount}");
-                Console.WriteLine($"CYCLE TYPE        {(int)this.CycleType}");
-                Console.WriteLine($"DIRECTION         {this.Direction}");
-                Console.WriteLine($"DRAWN             {(this.Drawn ? 1 : 0)}");
-                Console.WriteLine($"FIXED LOOP        {(this.FixedLoop ? 1 : 0)}");
-                Console.WriteLine($"FIXED PRIORITY    {(this.FixedPriority ? 1 : 0)}");
-                Console.WriteLine($"IGNORE BLOCKS     {(this.IgnoreBlocks ? 1 : 0)}");
-                Console.WriteLine($"IGNORE HORIZON    {(this.IgnoreHorizon ? 1 : 0)}");
-                Console.WriteLine($"IGNORE OBJECTS    {(this.IgnoreObjects ? 1 : 0)}");
-                Console.WriteLine($"MOTION PARAM 1    {this.MotionParam1}");
-                Console.WriteLine($"MOTION PARAM 2    {this.MotionParam2}");
-                Console.WriteLine($"MOTION PARAM 3    {this.MotionParam3}");
-                Console.WriteLine($"MOTION PARAM 4    {this.MotionParam4}");
-                Console.WriteLine($"MOTION TYPE       {(int )this.MotionType}");
-                Console.WriteLine($"NO ADVANCE        {(this.NoAdvance ? 1 : 0)}");
-                Console.WriteLine($"OBJECT NUMBER     {this.ObjectNumber}");
-                Console.WriteLine($"PREV X            {this.PrevX}");
-                Console.WriteLine($"PREV Y            {this.PrevY}");
-                Console.WriteLine($"PRIORITY          {this.Priority}");
-                Console.WriteLine($"REPOSITIONED      {(this.Repositioned ? 1 : 0)}");
-                Console.WriteLine($"STAY ON LAND      {(this.StayOnLand ? 1 : 0)}");
-                Console.WriteLine($"STAY ON WATER     {(this.StayOnWater ? 1 : 0)}");
-                Console.WriteLine($"STEP SIZE         {this.StepSize}");
-                Console.WriteLine($"STEP TIME         {this.StepTime}");
-                Console.WriteLine($"STEP TIME COUNT   {this.StepTimeCount}");
-                Console.WriteLine($"STOPPED           {(this.Stopped ? 1 : 0)}");
-                Console.WriteLine($"UPDATE            {(this.Update ? 1 : 0)}");
-                Console.WriteLine($"X                 {this.X}");
-                Console.WriteLine($"X SIZE            {this.XSize}");
-                Console.WriteLine($"Y                 {this.Y}");
-                Console.WriteLine($"Y SIZE            {this.YSize}");
-                Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                Console.WriteLine($"ANIMATED          {(obj.Animated ? 1 : 0)}");
+                Console.WriteLine($"BLOCKED           {(obj.Blocked ? 1 : 0)}");
+                Console.WriteLine($"CURRENT CEL       {obj.CurrentCel}");
+                Console.WriteLine($"CURRENT LOOP      {obj.CurrentLoop}");
+                Console.WriteLine($"CURRENT VIEW      {obj.CurrentView}");
+                Console.WriteLine($"CYCLE             {(obj.Cycle ? 1 : 0)}");
+                Console.WriteLine($"CYCLE TIME        {obj.CycleTime}");
+                Console.WriteLine($"CYCLE TIME COUNT  {obj.CycleTimeCount}");
+                Console.WriteLine($"CYCLE TYPE        {(int)obj.CycleType}");
+                Console.WriteLine($"DIRECTION         {obj.Direction}");
+                Console.WriteLine($"DRAWN             {(obj.Drawn ? 1 : 0)}");
+                Console.WriteLine($"FIXED LOOP        {(obj.FixedLoop ? 1 : 0)}");
+                Console.WriteLine($"FIXED PRIORITY    {(obj.FixedPriority ? 1 : 0)}");
+                Console.WriteLine($"IGNORE BLOCKS     {(obj.IgnoreBlocks ? 1 : 0)}");
+                Console.WriteLine($"IGNORE HORIZON    {(obj.IgnoreHorizon ? 1 : 0)}");
+                Console.WriteLine($"IGNORE OBJECTS    {(obj.IgnoreObjects ? 1 : 0)}");
+                Console.WriteLine($"MOTION PARAM 1    {obj.MotionParam1}");
+                Console.WriteLine($"MOTION PARAM 2    {obj.MotionParam2}");
+                Console.WriteLine($"MOTION PARAM 3    {obj.MotionParam3}");
+                Console.WriteLine($"MOTION PARAM 4    {obj.MotionParam4}");
+                Console.WriteLine($"MOTION TYPE       {(int )obj.MotionType}");
+                Console.WriteLine($"NO ADVANCE        {(obj.NoAdvance ? 1 : 0)}");
+                Console.WriteLine($"OBJECT NUMBER     {obj.ObjectNumber}");
+                Console.WriteLine($"PREV X            {obj.PrevX}");
+                Console.WriteLine($"PREV Y            {obj.PrevY}");
+                Console.WriteLine($"PRIORITY          {obj.Priority}");
+                Console.WriteLine($"REPOSITIONED      {(obj.Repositioned ? 1 : 0)}");
+                Console.WriteLine($"STAY ON LAND      {(obj.StayOnLand ? 1 : 0)}");
+                Console.WriteLine($"STAY ON WATER     {(obj.StayOnWater ? 1 : 0)}");
+                Console.WriteLine($"STEP SIZE         {obj.StepSize}");
+                Console.WriteLine($"STEP TIME         {obj.StepTime}");
+                Console.WriteLine($"STEP TIME COUNT   {obj.StepTimeCount}");
+                Console.WriteLine($"STOPPED           {(obj.Stopped ? 1 : 0)}");
+                Console.WriteLine($"UPDATE            {(obj.Update ? 1 : 0)}");
+                Console.WriteLine($"X                 {obj.X}");
+                Console.WriteLine($"X SIZE            {obj.XSize}");
+                Console.WriteLine($"Y                 {obj.Y}");
+                Console.WriteLine($"Y SIZE            {obj.YSize}");
+                Console.WriteLine($"FLAG 0           {(state.Flags[0] ? 1 : 0)}");
+                Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
             }
         }
 
@@ -150,7 +152,23 @@ namespace AGILE
         /// <summary>
         /// The current view number for this AnimatedObject.
         /// </summary>
-        public byte CurrentView { get; set; }
+        /// 
+        private byte currentView;
+        public byte CurrentView {
+            get
+            {
+                return currentView;
+            }
+            set
+            {
+                if(this.ObjectNumber == 1)
+                {
+                    int q = 7;
+                }
+
+                currentView = value;
+            }
+        }
 
         /// <summary>
         /// The View currently being used by this AnimatedObject.
@@ -1120,6 +1138,12 @@ namespace AGILE
                 this.Priority = CalculatePriority(Y);
             }
 
+
+            if (state.Vars[0] == 1 && this.ObjectNumber == 0)
+            { 
+                int q = 7;
+            }
+
             // Priority 15 skips the whole base line testing. None of the control lines
             // have any affect.
             if (this.Priority != 15)
@@ -1465,6 +1489,8 @@ namespace AGILE
         public void SetView(byte viewNum)
         {
             this.CurrentView = viewNum;
+
+            Console.WriteLine($"ADD VIEW TO TABLE {ObjectNumber} FOR {state.Vars[0]}\n");
 
             // If the current loop is greater than the number of loops for the view,
             // set the loop number to 0.  Otherwise, leave it alone.
